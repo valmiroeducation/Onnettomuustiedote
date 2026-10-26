@@ -13,6 +13,9 @@
   const SESSION_KEY = "pohtiedote-login-v2";
   const DRAFT_KEY = "pohtiedote-local-draft-v2";
   const FONT_KEY = "pohtiedote-textsize-v2";
+  const SAVED_GITHUB_KEY = "pohtiedote-github-device-token-v1";
+  // A saved token is OPTIONAL. Browser storage is not a secure vault.
+  let restoreAttempted = false;
   const AREAS = [
     { id: "lappi", name: "Lapin pelastuslaitos" },
     { id: "pohjois-pohjanmaa", name: "Pohjois-Pohjanmaan pelastuslaitos" }
@@ -268,6 +271,7 @@
     state.loggedUser = match.username;
     sessionStorage.setItem(SESSION_KEY, match.username);
     notify("Kirjautuminen onnistui.");
+    restoreAttempted = false;
     location.hash = "#/admin";
   }
   function logout() {
@@ -275,6 +279,8 @@
     state.loggedUser = "";
     state.token = "";
     state.connected = false;
+    // Logout clears the active connection but not the opt-in remembered token.
+    // "Katkaise yhteys" in settings removes the remembered token completely.
     notify("Olet kirjautunut ulos.");
     location.hash = "#/";
     anchorRoute();
@@ -361,6 +367,54 @@
       throw new Error("Tiedosto muuttui yhtä aikaa toisessa istunnossa. Kokeile uudelleen.");
     } finally { state.busy = false; }
   }
+  function getSavedGitHub() {
+    const saved = parseJSON(localStorage.getItem(SAVED_GITHUB_KEY), null);
+    if (!saved || typeof saved.token !== "string" || !saved.token) return null;
+    if (saved.owner !== state.repo.owner || saved.repo !== state.repo.repo || saved.branch !== state.repo.branch) return null;
+    return saved;
+  }
+
+  async function restoreGitHub() {
+    if (restoreAttempted || !state.loggedUser || state.connected || state.busy || state.token) return;
+    restoreAttempted = true;
+    const saved = getSavedGitHub();
+    if (!saved) return;
+    state.token = saved.token;
+    try {
+      // Check saved credentials on GitHub before claiming the connection works.
+      const { data } = await githubGet();
+      if (!state.loggedUser || state.token !== saved.token) return;
+      state.notices = goodNotices(data);
+      state.loaded = true;
+      state.connected = true;
+      const path = hashPath();
+      if (path[0] === "admin") {
+        if (!path[1] || path[1] === "overview" || path[1] === "settings") {
+          showAdmin(path[1] || "overview", path[2] || "");
+        } else {
+          const indicator = $(".connected-info");
+          if (indicator) {
+            indicator.classList.add("is-connected");
+            indicator.innerHTML = '<span class="dot"></span>GitHub-yhteys muodostettu';
+          }
+          $("[data-connection-hint]")?.remove();
+        }
+      }
+    } catch (err) {
+      if (state.token !== saved.token) return;
+      state.token = "";
+      state.connected = false;
+      // Keep the saved token on temporary connection errors. A rejected token
+      // must be entered again; do not repeatedly send a known invalid token.
+      if (/GitHub esti pyynnön/.test(err.message)) {
+        localStorage.removeItem(SAVED_GITHUB_KEY);
+        notify("Tallennettu GitHub-token ei enää kelpaa. Luo uusi ja yhdistä uudelleen.", true);
+      } else {
+        notify(`Automaattinen GitHub-yhteys epäonnistui: ${err.message}`, true);
+      }
+    }
+  }
+
   async function connectGitHub(form) {
     if (state.busy) return;
     const fields = form.elements;
@@ -376,6 +430,13 @@
     try {
       const { data } = await githubGet();
       localStorage.setItem(SETTINGS_KEY, JSON.stringify(state.repo));
+      if (fields.remember.checked) {
+        localStorage.setItem(SAVED_GITHUB_KEY, JSON.stringify({
+          token: state.token, owner: state.repo.owner, repo: state.repo.repo, branch: state.repo.branch
+        }));
+      } else {
+        localStorage.removeItem(SAVED_GITHUB_KEY);
+      }
       state.notices = goodNotices(data);
       state.connected = true;
       state.loaded = true;
@@ -411,13 +472,15 @@
         </aside>
         <div class="admin-content" id="admin-content"></div>
       </div>`;
-    if (section === "settings") return renderSettings();
-    if (section === "new") return renderEditor();
-    if (section === "edit") return renderEditor(id);
-    return renderOverview();
+    if (section === "settings") renderSettings();
+    else if (section === "new") renderEditor();
+    else if (section === "edit") renderEditor(id);
+    else renderOverview();
+    // Reconnect after returning to this page or logging in again.
+    void restoreGitHub();
   }
   function connectionHint() {
-    return state.connected ? "" : `<div class="alert alert-info"><strong>Julkaiseminen ei ole vielä käytössä.</strong> Yhdistä GitHub-repositorio ja syötä kirjoitusoikeuden token kohdassa <a href="#/admin/settings">GitHub-yhteys</a>. Voit silti kirjoittaa paikallisen luonnoksen.</div>`;
+    return state.connected ? "" : `<div class="alert alert-info" data-connection-hint="true"><strong>Julkaiseminen ei ole vielä käytössä.</strong> Yhdistä GitHub-repositorio ja syötä kirjoitusoikeuden token kohdassa <a href="#/admin/settings">GitHub-yhteys</a>. Voit silti kirjoittaa paikallisen luonnoksen.</div>`;
   }
   function renderOverview() {
     const out = $("#admin-content");
@@ -455,8 +518,15 @@
               <div class="form-field"><label for="gh-owner">GitHub-käyttäjä / organisaatio</label><input id="gh-owner" name="owner" value="${e(state.repo.owner)}" placeholder="esim. oma-kayttaja" required></div>
               <div class="form-field"><label for="gh-repo">Repositorio</label><input id="gh-repo" name="repo" value="${e(state.repo.repo)}" placeholder="esim. onnettomuustiedotteet" required></div>
               <div class="form-field"><label for="gh-branch">Haara</label><input id="gh-branch" name="branch" value="${e(state.repo.branch)}" required><small>Useimmiten main.</small></div>
-              <div class="form-field wide"><label for="gh-token">GitHub fine-grained token</label><input id="gh-token" name="token" type="password" placeholder="${state.token ? "Token käytössä tässä istunnossa (voit jättää tyhjäksi)" : "github_pat_..."}" autocomplete="off" ${state.token ? "" : "required"}>
-                <small>Valitse GitHubissa vain tämä repositorio ja <strong>Contents → Read and write</strong>. Token on käytössä vain sivun ollessa avoinna. Älä julkaise sitä missään.</small></div>
+              <div class="form-field wide"><label for="gh-token">GitHub fine-grained token</label><input id="gh-token" name="token" type="password" placeholder="${state.token ? "Token käytössä (voit jättää tyhjäksi)" : "github_pat_..."}" autocomplete="off" ${state.token ? "" : "required"}>
+                <small>Valitse GitHubissa vain tämä repositorio ja <strong>Contents → Read and write</strong>. Älä julkaise tokenia missään.</small></div>
+              <div class="form-field wide" style="margin-top:-5px">
+                <label for="gh-remember" style="display:flex;align-items:center;gap:9px;cursor:pointer;font-weight:500">
+                  <input id="gh-remember" name="remember" type="checkbox" style="width:auto;margin:0" ${getSavedGitHub() ? "checked" : ""}>
+                  Muista GitHub-token tällä laitteella
+                </label>
+                <small>Jos valitset tämän, token tallentuu tähän selaimeen ilman salausta ja yhteys muodostetaan automaattisesti jatkossa. Käytä vain omalla, luotetulla laitteella. Jaetulla koneella jätä valitsematta.</small>
+              </div>
             </div>
             <p id="settings-error" class="alert" role="alert" hidden></p>
             <div class="inline-actions"><button class="btn btn-red" type="submit">Yhdistä GitHubiin</button><button class="btn btn-quiet" data-disconnect="true" type="button">Katkaise yhteys</button></div>
@@ -617,7 +687,11 @@
     const remove = target.closest("[data-delete]");
     if (remove) { removeNotice(remove.dataset.delete); return; }
     if (target.closest("[data-disconnect]")) {
-      state.token = ""; state.connected = false; notify("GitHub-yhteys katkaistu."); showAdmin("settings");
+      localStorage.removeItem(SAVED_GITHUB_KEY);
+      state.token = ""; state.connected = false;
+      restoreAttempted = true;
+      notify("GitHub-yhteys katkaistu ja mahdollisesti tallennettu token poistettu tältä selaimelta.");
+      showAdmin("settings");
     }
   });
   document.addEventListener("change", event => {
