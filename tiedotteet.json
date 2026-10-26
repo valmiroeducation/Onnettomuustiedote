@@ -1,24 +1,5 @@
 {
   "version": 1,
-  "notices": [
-    {
-      "id": "harjoitus-08",
-      "status": "published",
-      "title": "Harjoitustiedote: automaattinen paloilmoitus Oulussa",
-      "organization": "pohjois-pohjanmaa",
-      "type": "Ensimmäinen mediatiedote",
-      "taskType": "Palohälytys",
-      "municipality": "Oulu",
-      "locality": "Tuira",
-      "address": "Valtatie",
-      "duration": "25 minuuttia",
-      "phase": "Toiminta päättynyt",
-      "persons": "0",
-      "incidentDate": "2026-10-18T08:23:00+03:00",
-      "publishedAt": "2026-10-18T08:27:00+03:00",
-      "updatedAt": "2026-10-18T08:27:00+03:00",
-      "description": "Tämä on täysin kuvitteellinen harjoitustiedote, jolla esitellään järjestelmän toimintaa. Tapahtumaa ei ole todellisuudessa vahvistettu. Malliesimerkissä pelastustoimi vastaanottaa ilmoituksen Oulun alueelta. Pelastusyksiköt arvioivat tilanteen ja suorittavat tarvittavat toimenpiteet. Harjoitustilanteen toiminta on päättynyt. Tämä teksti tulee poistaa tai korvata ennen järjestelmän käyttämistä oikeaan tiedottamiseen."
-    }
-  ],
-  "updatedAt": "2026-10-26T18:24:59.533Z"
+  "notices": [],
+  "updatedAt": "2026-10-26T18:25:05.403Z"
 }
