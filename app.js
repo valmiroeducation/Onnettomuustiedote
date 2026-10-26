@@ -9,10 +9,10 @@
 (() => {
   const CONFIG = window.ONNETTOMUUS_APP;
   const DATA_FILE = CONFIG.dataPath || "tiedotteet.json";
-  const SETTINGS_KEY = "pohtiedote-repo-v1";
-  const SESSION_KEY = "pohtiedote-login-v1";
-  const DRAFT_KEY = "pohtiedote-local-draft-v1";
-  const FONT_KEY = "pohtiedote-textsize-v1";
+  const SETTINGS_KEY = "pohtiedote-repo-v2";
+  const SESSION_KEY = "pohtiedote-login-v2";
+  const DRAFT_KEY = "pohtiedote-local-draft-v2";
+  const FONT_KEY = "pohtiedote-textsize-v2";
   const AREAS = [
     { id: "lappi", name: "Lapin pelastuslaitos" },
     { id: "pohjois-pohjanmaa", name: "Pohjois-Pohjanmaan pelastuslaitos" }
@@ -56,7 +56,10 @@
     if (Number.isNaN(date.getTime())) return "–";
     const opts = { timeZone: "Europe/Helsinki", day: "2-digit", month: "2-digit", year: "numeric" };
     if (!dateOnly) Object.assign(opts, { hour: "2-digit", minute: "2-digit" });
-    return new Intl.DateTimeFormat("fi-FI", opts).format(date).replace(/\u00a0/g, " ");
+    const fields = Object.fromEntries(new Intl.DateTimeFormat("fi-FI", opts)
+      .formatToParts(date).filter(part => part.type !== "literal")
+      .map(part => [part.type, part.value]));
+    return `${fields.day}.${fields.month}.${fields.year}${dateOnly ? "" : ` ${fields.hour}:${fields.minute}`}`;
   }
   function datetimeInput(value) {
     const d = value ? new Date(value) : new Date();
@@ -121,11 +124,16 @@
     try {
       const response = await fetch(`${DATA_FILE}?v=${Date.now()}`, { cache: "no-store" });
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
-      state.notices = goodNotices(await response.json());
+      const raw = await response.text();
+      if (!raw.trim()) throw new Error("tiedotteet.json on tyhjä");
+      let parsed;
+      try { parsed = JSON.parse(raw); }
+      catch { throw new Error("tiedotteet.json ei ole kelvollista JSONia – korvaa se ladatulla tiedostolla"); }
+      state.notices = goodNotices(parsed);
       state.loadError = "";
     } catch (err) {
       state.notices = [];
-      state.loadError = `Tiedotteiden lataus epäonnistui (${err.message}). Tarkista, että tiedotteet.json on samalla tasolla kuin index.html.`;
+      state.loadError = `Tiedotteiden lataus epäonnistui: ${err.message}. Tarkista tiedosto tiedotteet.json GitHub-repositorion juuressa (samalla tasolla kuin index.html).`;
     }
     state.loaded = true;
     anchorRoute();
@@ -150,7 +158,7 @@
           </label>
           <div class="filter-right">
             <div class="view-pill" title="Tiedotekortit" aria-hidden="true">≡</div>
-            <label class="search-control">Etsi: <input type="search" id="notice-search" value="${e(state.search)}" placeholder="Hae tiedotteista" autocomplete="off"></label>
+            <label class="search-control">Etsi: <input type="search" id="notice-search" value="${e(state.search)}" autocomplete="off"></label>
           </div>
         </div>
         ${state.loadError ? `<div class="alert" role="alert">${e(state.loadError)}</div>` : ""}
@@ -313,7 +321,10 @@
           : `GitHub-virhe ${res.status}: ${apiError || "Yhteys epäonnistui."}`);
     }
     const content = await res.json();
-    const data = JSON.parse(fromBase64(content.content));
+    if (content.type !== "file" || !content.content) throw new Error("GitHub ei palauttanut tiedotetiedoston sisältöä.");
+    let data;
+    try { data = JSON.parse(fromBase64(content.content)); }
+    catch { throw new Error("GitHubissa oleva tiedotteet.json on rikki. Korjaa se ennen yhdistämistä."); }
     goodNotices(data);
     return { data, sha: content.sha };
   }
@@ -445,7 +456,7 @@
               <div class="form-field"><label for="gh-repo">Repositorio</label><input id="gh-repo" name="repo" value="${e(state.repo.repo)}" placeholder="esim. onnettomuustiedotteet" required></div>
               <div class="form-field"><label for="gh-branch">Haara</label><input id="gh-branch" name="branch" value="${e(state.repo.branch)}" required><small>Useimmiten main.</small></div>
               <div class="form-field wide"><label for="gh-token">GitHub fine-grained token</label><input id="gh-token" name="token" type="password" placeholder="${state.token ? "Token käytössä tässä istunnossa (voit jättää tyhjäksi)" : "github_pat_..."}" autocomplete="off" ${state.token ? "" : "required"}>
-                <small>Vain tämän repositorion <strong>Contents: Read and write</strong>. Tokenia ei tallenneta selaimen muistiin eikä tiedostoihin.</small></div>
+                <small>Valitse GitHubissa vain tämä repositorio ja <strong>Contents → Read and write</strong>. Token on käytössä vain sivun ollessa avoinna. Älä julkaise sitä missään.</small></div>
             </div>
             <p id="settings-error" class="alert" role="alert" hidden></p>
             <div class="inline-actions"><button class="btn btn-red" type="submit">Yhdistä GitHubiin</button><button class="btn btn-quiet" data-disconnect="true" type="button">Katkaise yhteys</button></div>
