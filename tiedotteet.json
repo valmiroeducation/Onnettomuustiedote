@@ -1,24 +1,5 @@
 {
   "version": 1,
-  "notices": [
-    {
-      "organization": "lappi",
-      "type": "Ensimmäinen mediatiedote",
-      "title": "TESTI",
-      "incidentDate": "2026-10-26T17:57:00.000Z",
-      "taskType": "TESTI",
-      "municipality": "TESTI",
-      "locality": "TESTI",
-      "address": "TESTI",
-      "duration": "TESTI",
-      "phase": "Toiminta käynnissä",
-      "persons": "",
-      "description": "JÄRJESTELMÄN TESTI",
-      "id": "31e507a7-702d-4e35-93ab-79a56d4213b2",
-      "status": "published",
-      "publishedAt": "2026-10-26T18:25:09.340Z",
-      "updatedAt": "2026-10-26T18:25:09.340Z"
-    }
-  ],
-  "updatedAt": "2026-10-26T18:25:09.830Z"
+  "notices": [],
+  "updatedAt": "2026-10-26T18:26:25.795Z"
 }
