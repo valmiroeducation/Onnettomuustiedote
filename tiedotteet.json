@@ -1,5 +1,24 @@
 {
   "version": 1,
-  "notices": [],
-  "updatedAt": "2026-10-26T18:26:25.795Z"
+  "notices": [
+    {
+      "organization": "pohjois-pohjanmaa",
+      "type": "Ensimmäinen mediatiedote",
+      "title": "rrr",
+      "incidentDate": "2026-10-26T18:26:00.000Z",
+      "taskType": "",
+      "municipality": "rrr",
+      "locality": "",
+      "address": "",
+      "duration": "",
+      "phase": "Toiminta käynnissä",
+      "persons": "",
+      "description": "rrr",
+      "id": "0aee00c7-fc1d-4a01-ba79-61fdb60607fb",
+      "status": "published",
+      "publishedAt": "2026-10-26T18:26:57.109Z",
+      "updatedAt": "2026-10-26T18:26:57.109Z"
+    }
+  ],
+  "updatedAt": "2026-10-26T18:26:57.567Z"
 }
