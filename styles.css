@@ -229,3 +229,111 @@ kbd { font: inherit; background: #f0f1f2; padding: 1px 5px; border: 1px solid #d
   .footer-note { text-align: left; }
 }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition: none !important; scroll-behavior: auto !important; animation: none !important; } }
+
+/* V2: julkiset sivut mukailevat tarkasti annettujen referenssikuvien mittasuhteita. */
+:root { --red:#c32747; --red-dark:#a81c39; --ink:#101010; --muted:#777; --line:#e0e0e0; --slate:#6c757d; --slate-dark:#56616b; --shadow:0 3px 7px rgba(0,0,0,.25); }
+html { font-size:calc(14px * var(--text-scale)); }
+body { color:#101010; font-family:Arial,Helvetica,sans-serif; line-height:1.5; }
+.top-strip { display:none; }
+.site-header { border:0; }
+.header-inner { max-width:1428px; padding:22px 0 0; margin:0 auto; }
+.accessibility-controls { height:24px; margin-bottom:23px; align-items:center; gap:2px; }
+.accessibility-controls button { color:#111; }
+.header-main { max-width:1015px; min-height:24px; }
+.brand { font-size:17px; font-weight:400; color:#080808; display:inline-block; text-decoration:none; }
+.brand:hover { color:#080808; }
+.header-nav { gap:15px; }
+.header-nav a { font-size:14px; color:#4e5362; }
+.header-nav a.active { color:#161616; }
+.header-nav a:hover { color:var(--red); }
+#app { max-width:1200px; padding:56px 10px 88px; min-height:calc(100vh - 114px); }
+.public-list, .detail-container { width:100%; max-width:1178px; margin:0 auto; }
+.public-list { padding:0; }
+.page-heading { font-size:25px; font-weight:400; line-height:1.25; margin:0 0 8px; letter-spacing:0; }
+.section-rule { background:var(--red); height:3px; width:68px; margin-bottom:14px; }
+.area-filter { gap:21px; }
+.btn { font-size:14px; font-weight:400; line-height:1.25; padding:10px 14px; border-radius:2px; }
+.area-filter .btn { min-height:38px; font-weight:400; }
+.btn:hover { transform:none; }
+.filter-controls { margin-top:49px; margin-bottom:12px; min-height:82px; align-items:flex-start; gap:12px; }
+.page-size-control { font-size:14px; gap:6px; margin-top:3px; }
+.page-size-control select { width:74px; height:30px; padding:3px 8px; border:1px solid #d4dbe0; font-size:14px; }
+.filter-right { display:flex; flex-direction:column; align-items:flex-end; gap:14px; }
+.view-pill { background:var(--slate); width:45px; height:38px; font-size:18px; }
+.search-control { font-size:14px; gap:6px; }
+.search-control input { height:29px; width:157px; padding:2px 5px; background:white; border:1px solid #d4dbe0; border-radius:3px; }
+.notice-grid { grid-template-columns:repeat(3,minmax(0,1fr)); gap:15px 15px; }
+.notice-card { min-height:222px; border:1px solid #e4e4e4; background:white; box-shadow:var(--shadow); }
+.notice-fields { margin:0; }
+.notice-row { display:grid; grid-template-columns:64px minmax(0,1fr); gap:8px; min-height:37px; padding:8px 7px 6px; line-height:1.4; font-size:14px; border-bottom:1px solid #dedede; }
+.notice-row dt { color:#8b8b8b; font-weight:400; }
+.notice-row dd { color:#090909; font-weight:400; }
+.notice-row .notice-card-title { font-weight:400; }
+.notice-card-foot { padding:9px 7px 7px; margin-top:auto; }
+.notice-card-foot .btn { padding:9px 10px; min-height:38px; font-size:14px; }
+/* Korttien väliin ei lisätä referenssistä puuttuvaa numeroriviä. */
+.status-line { position:absolute; left:-10000px; height:1px; width:1px; overflow:hidden; }
+.empty-state { background:#fff; border:1px solid #ddd; padding:50px 20px; }
+.empty-icon { display:none; }
+.alert { margin:8px 0 16px; }
+.detail-container { margin:0 auto; }
+.detail-title { font-size:35px; line-height:1.24; max-width:1080px; font-weight:400; text-transform:uppercase; color:var(--red); margin:0 0 7px; letter-spacing:0; }
+.detail-container > .section-rule { margin-bottom:9px !important; }
+.detail-date { font-size:14px; font-weight:700; margin:0; }
+.detail-updated { font-size:12px; font-style:italic; margin:0 0 16px; }
+.detail-fields { margin-top:15px; gap:15px; }
+.detail-row { grid-template-columns:184px minmax(0,1fr); gap:14px; font-size:14px; line-height:1.52; }
+.detail-row dt { font-weight:700; color:var(--red); }
+.detail-row dd { color:#111; }
+.fact-line { margin-bottom:12px; }
+.fact-line strong { font-weight:700; }
+.description-body { line-height:1.6; white-space:pre-wrap; }
+.detail-actions { margin-top:16px; }
+.detail-actions .btn { min-height:38px; }
+/* Kirjautuminen keskellä; ei kuvaa, ei turhia tunnuksia. */
+.login-page { display:flex; justify-content:center; padding:32px 0 10px; }
+.login-panel { border:0; border-top:0; box-shadow:none; width:min(100%,620px); padding:20px 15px 25px; }
+.login-emblem { display:none; }
+.login-title { color:var(--red); font-size:29px; line-height:1.2; margin:0 0 7px; }
+.login-title::after { content:""; display:block; width:65px; background:var(--red); height:3px; margin-top:11px; }
+.login-subtitle { color:#555; font-size:14px; margin:0 0 32px; }
+.login-panel .form-field { display:grid; grid-template-columns:145px minmax(0,1fr); align-items:center; gap:10px; margin-bottom:16px; }
+.login-panel .form-field > label { color:#111; font-weight:400; font-size:14px; }
+.login-panel .form-field input { border:1px solid #d6dce0; height:36px; padding:7px 9px; border-radius:4px; }
+.login-footnote { border-top:1px solid #ececec; margin-top:32px; padding-top:18px; }
+.site-footer { border-top:1px solid #eee; background:#fff; }
+.footer-inner { max-width:1178px; margin:0 auto; padding:22px 0; color:#777; font-size:11px; display:block; }
+@media (max-width:1470px) { .header-inner { padding-left:20px; padding-right:20px; } }
+@media (max-width:900px) {
+  #app { max-width:100%; padding:42px 20px 70px; }
+  .notice-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .header-inner { padding:16px 20px 0; }
+  .detail-row { grid-template-columns:175px minmax(0,1fr); }
+}
+@media (max-width:650px) {
+  #app { padding:30px 15px 58px; }
+  .header-main { flex-direction:column; align-items:flex-start; gap:10px; }
+  .header-nav { padding:6px 0; }
+  .brand { font-size:15px; }
+  .area-filter { gap:8px; }
+  .area-filter .btn { font-size:12px; padding:9px 11px; }
+  .filter-controls { margin-top:26px; }
+  .filter-right { width:100%; gap:10px; }
+  .search-control { width:100%; }
+  .search-control input { flex:1; }
+  .notice-grid { grid-template-columns:1fr; }
+  .detail-title { font-size:26px; }
+  .detail-row { grid-template-columns:1fr; gap:2px; }
+  .detail-actions .btn { width:100%; }
+  .login-panel .form-field { grid-template-columns:1fr; gap:4px; }
+  .login-panel { padding:5px 0 20px; }
+  .footer-inner { padding:20px 15px; }
+}
+
+/* Tarkennukset referenssikorttien asetteluun. */
+.filter-controls { padding-right:12px; }
+.notice-grid { margin-left:8px; margin-right:20px; }
+.notice-row { grid-template-columns:max-content minmax(0,1fr); }
+.notice-row:nth-child(-n+2) { grid-template-columns:64px minmax(0,1fr); }
+.notice-row dt { white-space:nowrap; }
+@media(max-width:650px){ .notice-grid{margin-left:0; margin-right:0;} .filter-controls{padding-right:0;} }
