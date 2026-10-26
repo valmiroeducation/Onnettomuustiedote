@@ -1,1 +1,57 @@
+<!doctype html>
+<html lang="fi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#bf2948">
+  <meta name="description" content="Lapin ja Pohjois-Pohjanmaan pelastuslaitosten onnettomuustiedotteet.">
+  <title>Onnettomuustiedotteet | Lappi ja Pohjois-Pohjanmaa</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="top-strip" aria-hidden="true"></div>
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="accessibility-controls" aria-label="Tekstin koko">
+        <button type="button" data-font="small" title="Pienempi tekstikoko">A</button>
+        <button type="button" data-font="medium" title="Tavallinen tekstikoko">A</button>
+        <button type="button" data-font="large" title="Suurempi tekstikoko">A</button>
+      </div>
+      <div class="header-main">
+        <a class="brand" href="#/" aria-label="Siirry julkiseen tiedotelistaan">
+          <span class="brand-mark" aria-hidden="true"><span></span><span></span><span></span></span>
+          <span><strong>Pohjoisen Suomen</strong><small>pelastuslaitosten onnettomuustiedotteet</small></span>
+        </a>
+        <nav class="header-nav" aria-label="Päävalikko">
+          <a href="#/" data-nav="public">Julkinen tiedotelista</a>
+          <a href="#/login" data-nav="login" id="login-link">Kirjaudu</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+  <main id="app" tabindex="-1">
+    <div class="loading"><div class="spinner"></div><p>Ladataan tiedotteita…</p></div>
+  </main>
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div><strong>ONNETTOMUUSTIEDOTTEET</strong><p>Lappi · Pohjois-Pohjanmaa</p></div>
+      <div class="footer-note">Itsenäinen tiedotejärjestelmä. Ei pelastuslaitosten virallinen tiedotuskanava ilman niiden hyväksyntää.</div>
+    </div>
+  </footer>
+  <div id="toast-container" class="toast-container" aria-live="polite" aria-atomic="true"></div>
 
+  <!-- HUOM: GitHub Pages -sivun lähdekoodi on julkinen.
+       Alla oleva tunnus ja salasana ovat vain käyttöliittymän kevyt lukitus,
+       EIVÄT oikea tietoturvallinen kirjautumisjärjestelmä.
+       GitHub-kirjoitusoikeus vaatii erillisen, vain istunnon ajaksi syötettävän tokenin. -->
+  <script>
+    window.ONNETTOMUUS_APP = {
+      users: [
+        { username: "RPOHJ_JOKE", password: "JOKE_RPOHJ", displayName: "Ylläpitäjä" }
+      ],
+      dataPath: "tiedotteet.json"
+    };
+  </script>
+  <script defer src="app.js"></script>
+</body>
+</html>
