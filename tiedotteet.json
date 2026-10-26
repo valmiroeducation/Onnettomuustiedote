@@ -2,24 +2,6 @@
   "version": 1,
   "notices": [
     {
-      "id": "harjoitus-06",
-      "status": "published",
-      "title": "Harjoitustiedote: vahingontorjuntatehtävä Raahessa",
-      "organization": "pohjois-pohjanmaa",
-      "type": "Ensimmäinen mediatiedote",
-      "taskType": "Vahingontorjunta",
-      "municipality": "Raahe",
-      "locality": "Keskusta",
-      "address": "Rantakatu",
-      "duration": "1 tunti",
-      "phase": "Toiminta päättynyt",
-      "persons": "0",
-      "incidentDate": "2026-10-19T09:21:00+03:00",
-      "publishedAt": "2026-10-19T09:30:00+03:00",
-      "updatedAt": "2026-10-19T09:30:00+03:00",
-      "description": "Tämä on täysin kuvitteellinen harjoitustiedote, jolla esitellään järjestelmän toimintaa. Tapahtumaa ei ole todellisuudessa vahvistettu. Malliesimerkissä pelastustoimi vastaanottaa ilmoituksen Raahen alueelta. Pelastusyksiköt arvioivat tilanteen ja suorittavat tarvittavat toimenpiteet. Harjoitustilanteen toiminta on päättynyt. Tämä teksti tulee poistaa tai korvata ennen järjestelmän käyttämistä oikeaan tiedottamiseen."
-    },
-    {
       "id": "harjoitus-07",
       "status": "published",
       "title": "Harjoitustiedote: liikenneonnettomuus Sodankylässä",
@@ -74,5 +56,5 @@
       "description": "Tämä on täysin kuvitteellinen harjoitustiedote, jolla esitellään järjestelmän toimintaa. Tapahtumaa ei ole todellisuudessa vahvistettu. Malliesimerkissä pelastustoimi vastaanottaa ilmoituksen Inarin alueelta. Pelastusyksiköt arvioivat tilanteen ja suorittavat tarvittavat toimenpiteet. Harjoitustilanteen toiminta on päättynyt. Tämä teksti tulee poistaa tai korvata ennen järjestelmän käyttämistä oikeaan tiedottamiseen."
     }
   ],
-  "updatedAt": "2026-10-26T18:24:47.722Z"
+  "updatedAt": "2026-10-26T18:24:52.838Z"
 }
